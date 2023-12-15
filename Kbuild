@@ -5,16 +5,26 @@ ifeq ($(MODNAME),)
 else
 	KERNEL_BUILD := n
 endif
+CONFIG_CNSS_OUT_OF_TREE=y
+CONFIG_CNSS2=y
+CONFIG_CNSS2_QMI=y
+CONFIG_CNSS2_DEBUG=y
+CONFIG_CNSS_QMI_SVC=y
+CONFIG_CNSS_PLAT_IPC_QMI_SVC=y
+CONFIG_CNSS_GENL=y
+CONFIG_CNSS_UTILS=y
+CONFIG_CNSS2_SSR_DRIVER_DUMP=y
+CONFIG_WCNSS_MEM_PRE_ALLOC=y
 
 ifeq ($(KERNEL_BUILD), y)
 	# These are provided in external module based builds
 	# Need to explicitly define for Kernel-based builds
 	MODNAME := wlan
-	WLAN_ROOT := drivers/staging/qcacld-3.0
+	WLAN_ROOT := $(srctree)/drivers/staging/wlan-qc/qcacld-3.0
 	WLAN_COMMON_ROOT := cmn
 	WLAN_COMMON_INC := $(WLAN_ROOT)/$(WLAN_COMMON_ROOT)
 	WLAN_FW_API := $(WLAN_ROOT)/../fw-api/
-	WLAN_PROFILE := default
+	WLAN_PROFILE := qca6490
 endif
 
 WLAN_COMMON_ROOT ?= cmn
@@ -23,7 +33,8 @@ WLAN_FW_API ?= $(WLAN_ROOT)/../fw-api/
 WLAN_PROFILE ?= default
 CONFIG_QCA_CLD_WLAN_PROFILE ?= $(WLAN_PROFILE)
 DEVNAME ?= wlan
-WLAN_PLATFORM_INC ?= $(WLAN_ROOT)/../platform/inc
+WLAN_PLATFORM_INC ?= $(srctree)/techpack/wlan/inc
+WLAN_CTRL_NAME := wlan
 
 ifeq ($(KERNEL_BUILD), n)
 ifneq ($(ANDROID_BUILD_TOP),)
@@ -4748,9 +4759,9 @@ KBUILD_CPPFLAGS += $(cppflags-y)
 # will override the kernel settings.
 ifeq ($(call cc-option-yn, -Wmaybe-uninitialized), y)
 ccflags-y += -Wmaybe-uninitialized
+endif
 ifneq (y,$(CONFIG_ARCH_MSM))
 ccflags-y += -Wframe-larger-than=4096
-endif
 endif
 ccflags-y += -Wmissing-prototypes
 
@@ -4776,7 +4787,6 @@ endif
 # MULTI_IF_NAME to make cnss2 platform driver to figure out which wlanhost
 # driver attached. Moreover, as the first priority, host driver will only
 # append DYNAMIC_SINGLE_CHIP to the path of firmware/mac/ini file.
-
 ifneq ($(DYNAMIC_SINGLE_CHIP),)
 ccflags-y += -DDYNAMIC_SINGLE_CHIP=\"$(DYNAMIC_SINGLE_CHIP)\"
 ifneq ($(MULTI_IF_NAME),)

@@ -8,18 +8,13 @@ endif
 include $(WLAN_ROOT)/configs/default_defconfig
 
 #Enable 11BE EHT
-CONFIG_WLAN_FEATURE_11BE := y
 
 #Enable IPA Optional wifi datapath feature
 CONFIG_IPA_OPT_WIFI_DP := y
 
-ifeq ($(CONFIG_ARCH_KALAMA), y)
-ifeq ($(CONFIG_IPA_OPT_WIFI_DP), y)
 CONFIG_IPA_OFFLOAD := y
 CONFIG_ENABLE_SMMU_S1_TRANSLATION := y
 CONFIG_SMMU_S1_UNMAP := y
-endif
-endif
 
 # Enable EHT rate sysfs entry
 ifeq ($(CONFIG_WLAN_SYSFS), y)
@@ -31,7 +26,6 @@ endif
 CONFIG_CFG_MAX_STA_VDEVS := 4
 
 #Enable 11BE MLO
-CONFIG_WLAN_FEATURE_11BE_MLO := y
 
 #BMISS offload max vdev config
 CONFIG_CFG_BMISS_OFFLOAD_MAX_VDEV := 4
